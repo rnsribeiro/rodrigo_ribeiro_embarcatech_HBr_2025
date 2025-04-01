@@ -1,0 +1,64 @@
+# Arquivos de build e binários
+*.o
+*.a
+*.hex
+*.elf
+*.bin
+*.map
+*.lst
+*.out
+*.srec
+*.axf
+*.d
+
+# Diretórios de build
+build/
+dist/
+out/
+obj/
+
+# Arquivos temporários
+*.log
+*.bak
+*.tmp
+*.swp
+
+# Dependências externas (ex.: bibliotecas baixadas)
+lib/
+libs/
+vendor/
+
+# Ferramentas de desenvolvimento e IDEs
+.vscode/
+.idea/
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+.project
+.cproject
+.settings/
+
+# Arquivos de configuração local
+*.local
+*.user
+
+# Sistemas operacionais
+.DS_Store
+Thumbs.db
+
+# Testes e relatórios
+test/
+*.gcda
+*.gcno
+*.gcov
+coverage/
+
+# Documentação gerada
+docs/_build/
+*.pdf
+
+# Outros arquivos comuns em embarcados
+*.i
+*.s
+*.su
+*.sym
