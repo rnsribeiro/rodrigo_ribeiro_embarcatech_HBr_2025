@@ -11,6 +11,9 @@ const uint I2C_SCL = 15; // Pino SCL para I2C do OLED
 const uint BUTTON_A = 5; // Botão A (GPIO5)
 const uint BUTTON_B = 6; // Botão B (GPIO6)
 
+// Período de debounce em milissegundos
+#define DEBOUNCE_MS 200
+
 // Variáveis globais
 volatile int counter = 0; // Contador decrescente (9 a 0)
 volatile int button_b_count = 0; // Contagem de pressionamentos do Botão B
@@ -18,16 +21,29 @@ volatile bool is_counting = false; // Estado da contagem regressiva
 volatile uint64_t last_time = 0; // Último tempo para controle de 1 segundo
 volatile bool button_a_pressed = false; // Flag para Botão A
 volatile bool button_b_pressed = false; // Flag para Botão B
+volatile uint64_t last_button_a_time = 0; // Tempo do último evento do Botão A
+volatile uint64_t last_button_b_time = 0; // Tempo do último evento do Botão B
 
 // Função de callback para interrupções dos botões
 void gpio_callback(uint gpio, uint32_t events) {
+    uint64_t current_time = time_us_64() / 1000; // Tempo atual em milissegundos
+
     // Botão A pressionado (borda de descida)
     if (gpio == BUTTON_A && (events & GPIO_IRQ_EDGE_FALL)) {
-        button_a_pressed = true;
+        // Verifica se passou o tempo de debounce
+        if (current_time - last_button_a_time >= DEBOUNCE_MS) {
+            button_a_pressed = true;
+            last_button_a_time = current_time; // Atualiza o tempo do último evento
+        }
     }
+
     // Botão B pressionado (borda de descida)
     if (gpio == BUTTON_B && (events & GPIO_IRQ_EDGE_FALL) && is_counting) {
-        button_b_pressed = true;
+        // Verifica se passou o tempo de debounce
+        if (current_time - last_button_b_time >= DEBOUNCE_MS) {
+            button_b_pressed = true;
+            last_button_b_time = current_time; // Atualiza o tempo do último evento
+        }
     }
 }
 
@@ -93,7 +109,6 @@ int main() {
             last_time = time_us_64() / 1000; // Registra o tempo inicial
             button_a_pressed = false; // Reseta a flag
             update_display(ssd, &frame_area, counter, button_b_count); // Atualiza o display
-            sleep_ms(200); // Debounce
         }
 
         // Verifica se o Botão B foi pressionado (apenas se estiver contando)
@@ -101,7 +116,6 @@ int main() {
             button_b_count++; // Incrementa a contagem de Botão B
             button_b_pressed = false; // Reseta a flag
             update_display(ssd, &frame_area, counter, button_b_count); // Atualiza o display
-            sleep_ms(200); // Debounce
         }
 
         // Lógica da contagem regressiva
