@@ -89,6 +89,13 @@ O código foi estruturado nos seguintes arquivos:
 
    - Um atraso de 200 ms é aplicado após cada interrupção de botão para evitar múltiplas detecções devido ao efeito de bouncing.
 
+6. **Implementação de debounce não bloqueante**:
+   
+   - Registro de Tempo: Para cada botão, armazena o tempo (em milissegundos) do último evento processado.
+   - Verificação de Intervalo: Na função de callback de interrupção, verifica se o tempo atual menos o tempo do último evento é maior que o período de debounce (ex.: 200 ms). Se for menor, ignore o evento.
+   - Processamento: Se o intervalo for suficiente, processe o evento e atualize o tempo do último evento.
+   - Execução Contínua: Como não há `sleep_ms`, o loop principal continua executando normalmente, mantendo a contagem regressiva e atualizações do display sem interrupções.
+
 ### Como Executar
 
 1. **Configuração do Hardware**:
