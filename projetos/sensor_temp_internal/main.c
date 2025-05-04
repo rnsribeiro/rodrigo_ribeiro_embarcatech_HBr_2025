@@ -78,6 +78,8 @@ int main() {
         // Atualiza o display com a temperatura
         update_display(ssd, &frame_area, temperature);
 
+        printf("Temperatura: %.1f°C\n", temperature);
+
         sleep_ms(1000); // Atualiza a cada 1 segundo
     }
 
